@@ -31,6 +31,8 @@ export default function ChildProfileScreen({ route, navigation }: any) {
       updateChild({ ...child, name: name.trim(), dob });
     } else {
       addChild({ name: name.trim(), dob });
+      navigation.replace('ChildrenList');
+      return;
     }
     navigation.goBack();
   };

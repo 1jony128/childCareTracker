@@ -61,37 +61,41 @@ export default function ChildProfileScreen({ route, navigation }: any) {
 
   // Форма добавления/редактирования
   return (
-    <View style={{ flex: 1, padding: 24, justifyContent: 'center', backgroundColor: '#F8FAFC' }}>
-      <Text variant="headlineMedium" style={{ marginBottom: 24 }}>{isNew ? 'Добавить ребенка' : 'Редактировать профиль'}</Text>
-      <Avatar.Icon icon="account-child" size={72} style={{ alignSelf: 'center', marginBottom: 24 }} />
+    <View style={{ flex: 1, padding: 24, justifyContent: 'center', backgroundColor: '#F3F4F6' }}>
+      <Text variant="headlineMedium" style={{ marginBottom: 24, color: '#3730A3', fontWeight: 'bold' }}>{isNew ? 'Добавить ребенка' : 'Редактировать профиль'}</Text>
+      <Avatar.Icon icon="account-child" size={72} style={{ alignSelf: 'center', marginBottom: 24, backgroundColor: '#A5B4FC' }} color="#3730A3" />
       <TextInput
         label="Имя"
         value={name}
         onChangeText={setName}
-        style={{ marginBottom: 12, backgroundColor: '#F8FAFC', borderRadius: 16, height: 48, fontSize: 16 }}
+        style={{ marginBottom: 12, backgroundColor: '#fff', borderRadius: 16, height: 48, fontSize: 16, color: '#1E1B1C' }}
         mode="outlined"
-        placeholderTextColor="#1E1B1C"
+        placeholder="Имя"
+        placeholderTextColor="#6B7280"
+        theme={{ colors: { text: '#1E1B1C', placeholder: '#6B7280', primary: '#7C3AED', background: '#fff' } }}
       />
       <TextInput
         label="Дата рождения (ГГГГ-ММ-ДД)"
         value={dob}
         onChangeText={setDob}
-        style={{ marginBottom: 12, backgroundColor: '#F8FAFC', borderRadius: 16, height: 48, fontSize: 16 }}
+        style={{ marginBottom: 12, backgroundColor: '#fff', borderRadius: 16, height: 48, fontSize: 16, color: '#1E1B1C' }}
         mode="outlined"
-        placeholderTextColor="#1E1B1C"
+        placeholder="Дата рождения (ГГГГ-ММ-ДД)"
+        placeholderTextColor="#6B7280"
+        theme={{ colors: { text: '#1E1B1C', placeholder: '#6B7280', primary: '#7C3AED', background: '#fff' } }}
       />
-      <HelperText type="error" visible={!name.trim() || !dob}>
+      <HelperText type="error" visible={!name.trim() || !dob} style={{ color: '#EF4444', fontWeight: '500' }}>
         Имя и дата рождения обязательны
       </HelperText>
-      <Button mode="contained" onPress={handleSave} disabled={!name.trim() || !dob} style={{ borderRadius: 16, marginBottom: 8 }}>
+      <Button mode="contained" onPress={handleSave} disabled={!name.trim() || !dob} style={{ borderRadius: 16, marginBottom: 8, backgroundColor: '#7C3AED' }} labelStyle={{ color: '#fff', fontWeight: 'bold' }}>
         Сохранить
       </Button>
       {!isNew && (
-        <Button mode="outlined" onPress={() => setShowDialog(true)} style={{ borderRadius: 16, marginBottom: 8 }}>
+        <Button mode="outlined" onPress={() => setShowDialog(true)} style={{ borderRadius: 16, marginBottom: 8, borderColor: '#EF4444' }} labelStyle={{ color: '#EF4444', fontWeight: 'bold' }}>
           Удалить
         </Button>
       )}
-      <Button onPress={() => navigation.goBack()} style={{ borderRadius: 16 }}>Отмена</Button>
+      <Button onPress={() => navigation.goBack()} style={{ borderRadius: 16 }} labelStyle={{ color: '#7C3AED', fontWeight: 'bold' }}>Отмена</Button>
       <Portal>
         <Dialog visible={showDialog} onDismiss={() => setShowDialog(false)}>
           <Dialog.Title>Удалить профиль?</Dialog.Title>
@@ -99,8 +103,8 @@ export default function ChildProfileScreen({ route, navigation }: any) {
             <Text>Вы уверены, что хотите удалить профиль ребенка?</Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setShowDialog(false)}>Отмена</Button>
-            <Button onPress={handleDelete}>Удалить</Button>
+            <Button onPress={() => setShowDialog(false)} labelStyle={{ color: '#7C3AED', fontWeight: 'bold' }}>Отмена</Button>
+            <Button onPress={handleDelete} labelStyle={{ color: '#EF4444', fontWeight: 'bold' }}>Удалить</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

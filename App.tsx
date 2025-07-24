@@ -276,9 +276,17 @@ function ActivitySelectScreen({ route, navigation }: any) {
           )}
           {Platform.OS === 'web' ? (
             <input
-              type="datetime-local"
-              value={selectedDate.toISOString().slice(0, 16)}
-              onChange={e => setSelectedDate(new Date(e.target.value))}
+              type="time"
+              value={formatTime(selectedDate)}
+              onChange={e => {
+                const [hour, minute] = e.target.value.split(':').map(Number);
+                const today = new Date();
+                today.setHours(hour);
+                today.setMinutes(minute);
+                today.setSeconds(0);
+                today.setMilliseconds(0);
+                setSelectedDate(today);
+              }}
               style={{
                 ...inputStyle,
                 border: '1px solid #ccc',
@@ -291,24 +299,10 @@ function ActivitySelectScreen({ route, navigation }: any) {
               }}
             />
           ) : (
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
-              <Button mode="outlined" onPress={() => setShowDatePicker(true)} style={{ flex: 1, marginRight: 8, borderRadius: 16 }} textColor="#7C3AED">
-                {formatDate(selectedDate)}
-              </Button>
-              <Button mode="outlined" onPress={() => setShowTimePicker(true)} style={{ flex: 1, marginLeft: 8, borderRadius: 16 }} textColor="#7C3AED">
+            <View style={{ marginBottom: 12 }}>
+              <Button mode="outlined" onPress={() => setShowTimePicker(true)} style={{ borderRadius: 16 }} textColor="#7C3AED">
                 {formatTime(selectedDate)}
               </Button>
-              {showDatePicker && (
-                <DateTimePicker
-                  value={selectedDate}
-                  mode="date"
-                  display="default"
-                  onChange={(_event: any, d?: Date) => {
-                    setShowDatePicker(false);
-                    if (d) setSelectedDate(new Date(d.setHours(selectedDate.getHours(), selectedDate.getMinutes())));
-                  }}
-                />
-              )}
               {showTimePicker && (
                 <DateTimePicker
                   value={selectedDate}
@@ -316,7 +310,14 @@ function ActivitySelectScreen({ route, navigation }: any) {
                   display="default"
                   onChange={(_event: any, d?: Date) => {
                     setShowTimePicker(false);
-                    if (d) setSelectedDate(new Date(selectedDate.setHours(d.getHours(), d.getMinutes())));
+                    if (d) {
+                      const today = new Date();
+                      today.setHours(d.getHours());
+                      today.setMinutes(d.getMinutes());
+                      today.setSeconds(0);
+                      today.setMilliseconds(0);
+                      setSelectedDate(today);
+                    }
                   }}
                 />
               )}

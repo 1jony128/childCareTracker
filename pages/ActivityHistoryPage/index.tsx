@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text, Button, Card } from 'react-native-paper';
-import { View, FlatList, TouchableOpacity } from 'react-native';
+import { View, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { useAppState } from '../../AppState';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -102,21 +102,22 @@ export default function ActivityHistoryScreen({ route, navigation }: any) {
         )}
       />
       {/* Фильтр по периоду */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 20, gap: 8 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexDirection: 'row', justifyContent: 'flex-start', marginBottom: 20, paddingHorizontal: 0 }}>
         {['day','week','month','year'].map(p => (
           <Button
             key={p}
             mode={period === p ? 'contained' : 'outlined'}
             onPress={() => setPeriod(p as any)}
-            style={{ borderRadius: 16, marginHorizontal: 2 }}
+            style={{ borderRadius: 16, marginHorizontal: 2, minWidth: 90, paddingHorizontal: 0 }}
             buttonColor={period === p ? '#7C3AED' : undefined}
             textColor={period === p ? '#fff' : '#7C3AED'}
+            labelStyle={{ fontSize: 15, fontWeight: 'bold' }}
           >
             {p === 'day' ? 'День' : p === 'week' ? 'Неделя' : p === 'month' ? 'Месяц' : 'Год'}
           </Button>
         ))}
-        <Button icon="calendar" mode="text" onPress={() => setShowDate(true)} style={{ borderRadius: 16, marginLeft: 8 }} textColor="#7C3AED" />
-      </View>
+        <Button icon="calendar" mode="text" onPress={() => setShowDate(true)} style={{ borderRadius: 16, marginLeft: 8, minWidth: 48, paddingHorizontal: 0 }} textColor="#7C3AED">{''}</Button>
+      </ScrollView>
       {showDate && (
         <DateTimePicker
           value={date}

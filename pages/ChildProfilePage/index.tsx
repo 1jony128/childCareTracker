@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Text, Button, Avatar, TextInput, HelperText, Dialog, Portal, Appbar } from 'react-native-paper';
-import { View } from 'react-native';
+import { View, Platform, TouchableOpacity, TextInput as RNTextInput } from 'react-native';
 import { useAppState } from '../../AppState';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function ChildProfileScreen({ route, navigation }: any) {
   const { childId, isNew } = route.params || {};
@@ -12,6 +13,7 @@ export default function ChildProfileScreen({ route, navigation }: any) {
   const [name, setName] = React.useState(child?.name || '');
   const [dob, setDob] = React.useState(child?.dob || '');
   const [showDialog, setShowDialog] = React.useState(false);
+  const [showDatePicker, setShowDatePicker] = React.useState(false);
 
   React.useLayoutEffect(() => {
     if (editing) {
@@ -39,6 +41,63 @@ export default function ChildProfileScreen({ route, navigation }: any) {
     }
     navigation.goBack();
   };
+
+  // Компонент выбора даты
+  function DateInput() {
+    if (Platform.OS === 'web') {
+      return (
+        <View style={{ marginBottom: 12 }}>
+          <label style={{ color: '#1E1B1C', fontWeight: 'bold', marginBottom: 4, fontSize: 16 }}>Дата рождения</label>
+          <input
+            type="date"
+            value={dob}
+            onChange={e => setDob(e.target.value)}
+            style={{
+              width: '100%',
+              height: 48,
+              borderRadius: 16,
+              border: '1px solid #7C3AED',
+              padding: '0 12px',
+              fontSize: 16,
+              color: '#1E1B1C',
+              background: '#fff',
+              marginTop: 4
+            }}
+          />
+        </View>
+      );
+    }
+    return (
+      <TouchableOpacity onPress={() => setShowDatePicker(true)} activeOpacity={0.8} style={{ marginBottom: 12 }}>
+        <TextInput
+          label="Дата рождения (ГГГГ-ММ-ДД)"
+          value={dob}
+          editable={false}
+          style={{ backgroundColor: '#fff', borderRadius: 16, height: 48, fontSize: 16, color: '#1E1B1C' }}
+          mode="outlined"
+          placeholder="Дата рождения (ГГГГ-ММ-ДД)"
+          placeholderTextColor="#1E1B1C"
+          theme={{ colors: { text: '#1E1B1C', placeholder: '#1E1B1C', primary: '#7C3AED', background: '#fff' } }}
+        />
+        {showDatePicker && (
+          <DateTimePicker
+            value={dob ? new Date(dob) : new Date()}
+            mode="date"
+            display="default"
+            onChange={(_event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) {
+                const yyyy = selectedDate.getFullYear();
+                const mm = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(selectedDate.getDate()).padStart(2, '0');
+                setDob(`${yyyy}-${mm}-${dd}`);
+              }
+            }}
+          />
+        )}
+      </TouchableOpacity>
+    );
+  }
 
   if (editing && child) {
     // Просмотр профиля ребенка
@@ -71,19 +130,10 @@ export default function ChildProfileScreen({ route, navigation }: any) {
         style={{ marginBottom: 12, backgroundColor: '#fff', borderRadius: 16, height: 48, fontSize: 16, color: '#1E1B1C' }}
         mode="outlined"
         placeholder="Имя"
-        placeholderTextColor="#6B7280"
-        theme={{ colors: { text: '#1E1B1C', placeholder: '#6B7280', primary: '#7C3AED', background: '#fff' } }}
+        placeholderTextColor="#1E1B1C"
+        theme={{ colors: { text: '#1E1B1C', placeholder: '#1E1B1C', primary: '#7C3AED', background: '#fff' } }}
       />
-      <TextInput
-        label="Дата рождения (ГГГГ-ММ-ДД)"
-        value={dob}
-        onChangeText={setDob}
-        style={{ marginBottom: 12, backgroundColor: '#fff', borderRadius: 16, height: 48, fontSize: 16, color: '#1E1B1C' }}
-        mode="outlined"
-        placeholder="Дата рождения (ГГГГ-ММ-ДД)"
-        placeholderTextColor="#6B7280"
-        theme={{ colors: { text: '#1E1B1C', placeholder: '#6B7280', primary: '#7C3AED', background: '#fff' } }}
-      />
+      <DateInput />
       <HelperText type="error" visible={!name.trim() || !dob} style={{ color: '#EF4444', fontWeight: '500' }}>
         Имя и дата рождения обязательны
       </HelperText>

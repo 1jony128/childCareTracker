@@ -123,16 +123,40 @@ export default function ChildProfileScreen({ route, navigation }: any) {
     <View style={{ flex: 1, padding: 24, justifyContent: 'center', backgroundColor: '#F3F4F6' }}>
       <Text variant="headlineMedium" style={{ marginBottom: 24, color: '#3730A3', fontWeight: 'bold' }}>{isNew ? 'Добавить ребенка' : 'Редактировать профиль'}</Text>
       <Avatar.Icon icon="account-child" size={72} style={{ alignSelf: 'center', marginBottom: 24, backgroundColor: '#A5B4FC' }} color="#3730A3" />
-      <TextInput
-        label="Имя"
-        value={name}
-        onChangeText={setName}
-        style={{ marginBottom: 12, backgroundColor: '#fff', borderRadius: 16, height: 48, fontSize: 16, color: '#1E1B1C' }}
-        mode="outlined"
-        placeholder="Имя"
-        placeholderTextColor="#1E1B1C"
-        theme={{ colors: { text: '#1E1B1C', placeholder: '#1E1B1C', primary: '#7C3AED', background: '#fff' } }}
-      />
+      {Platform.OS === 'web' ? (
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ color: '#1E1B1C', fontWeight: 'bold', marginBottom: 4, fontSize: 16 }}>Имя</label>
+          <input
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Имя"
+            style={{
+              width: '100%',
+              height: 48,
+              borderRadius: 16,
+              border: '1px solid #7C3AED',
+              padding: '0 12px',
+              fontSize: 16,
+              color: '#1E1B1C',
+              background: '#fff',
+              fontWeight: 600,
+              marginTop: 4
+            }}
+          />
+        </div>
+      ) : (
+        <TextInput
+          label="Имя"
+          value={name}
+          onChangeText={setName}
+          style={{ marginBottom: 12, backgroundColor: '#fff', borderRadius: 16, height: 48, fontSize: 16, color: '#1E1B1C', fontWeight: '600' }}
+          mode="outlined"
+          placeholder="Имя"
+          placeholderTextColor="#1E1B1C"
+          theme={{ colors: { text: '#1E1B1C', placeholder: '#1E1B1C', primary: '#7C3AED', background: '#fff' } }}
+        />
+      )}
       <DateInput />
       <HelperText type="error" visible={!name.trim() || !dob} style={{ color: '#EF4444', fontWeight: '500' }}>
         Имя и дата рождения обязательны
@@ -145,7 +169,7 @@ export default function ChildProfileScreen({ route, navigation }: any) {
           Удалить
         </Button>
       )}
-      <Button onPress={() => navigation.goBack()} style={{ borderRadius: 16 }} labelStyle={{ color: '#7C3AED', fontWeight: 'bold' }}>Отмена</Button>
+      <Button onPress={() => { isNew ? navigation.replace('ChildrenList') : navigation.goBack(); }} style={{ borderRadius: 16 }} labelStyle={{ color: '#7C3AED', fontWeight: 'bold' }}>Отмена</Button>
       <Portal>
         <Dialog visible={showDialog} onDismiss={() => setShowDialog(false)}>
           <Dialog.Title>Удалить профиль?</Dialog.Title>
